@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00CC99"
+    android:weightSum="2"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:text="Air Purifier"
+        android:textColor="#ffffff"
+        android:textSize="32dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.1"
+        android:gravity="center"
+        android:text="PM 2.5 Estimate"
+        android:textColor="#ffffff"
+        android:textSize="24dp" />
+    <TextView
+        android:id="@+id/txtPM"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="#ffffff"
+        android:textSize="64dp" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:background="#ffffff"
+        android:orientation="vertical">
+    <Button
+        android:id="@+id/btnPowerAirPurifier"
+        android:layout_marginTop="10dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        android:background="@drawable/power_off"
+       />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listViewAirPurifier"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnSettingOnTimerPM"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="ตั้งเวลาเปิด"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:id="@+id/btnSettingOffTimerPM"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:text="ตั้งเวลาปิด"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btnSettingPM"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:text="ตั้งค่าสภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
