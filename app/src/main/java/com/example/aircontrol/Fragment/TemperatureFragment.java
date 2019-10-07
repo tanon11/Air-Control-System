@@ -3,21 +3,29 @@ package com.example.aircontrol.Fragment;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.aircontrol.R;
 import com.example.aircontrol.Utility.CustomAdapter;
+import com.example.aircontrol.Utility.MqttHelper;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.Calendar;
 
@@ -26,13 +34,14 @@ import java.util.Calendar;
  * A simple {@link Fragment} subclass.
  */
 public class TemperatureFragment extends Fragment {
-
+    MqttHelper mqttHelper;
     public boolean isCheckPowerBtn = true;
     public int timeOnHour;
     public int timeOnMinute;
     public int timeOffHour;
     public int timeOffMinute;
-
+    TextView txtTemp;
+    TextView txtHumidity;
     public TemperatureFragment() {
         // Required empty public constructor
     }
@@ -42,6 +51,10 @@ public class TemperatureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_temperature, container, false);
+        txtTemp = rootView.findViewById(R.id.txtTemp);
+        txtHumidity = rootView.findViewById(R.id.txtHumidity);
+        startMqtt();
+
         // สร้าง ListView
         this.onListViewSettingAirConditioner(rootView);
         //สร้าง Button เปิด-ปิด เครื่องปรับอากาศ
@@ -177,6 +190,44 @@ public class TemperatureFragment extends Fragment {
                 timePickerDialog.show();
             }
 
+        });
+    }
+
+    private void startMqtt(){
+        mqttHelper = new MqttHelper(getActivity());
+        mqttHelper.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.d("Debug","Connected");
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                Log.d("Debug",topic);
+                switch (topic){
+                    case "sensor/temp":
+                        txtTemp.setText(mqttMessage.toString());
+                        break;
+                    case "sensor/humidity":
+                        txtHumidity.setText(mqttMessage.toString());
+                        break;
+                    case "sensor/relay":
+
+                        break;
+                    default:
+                        Log.d("Error","Error ocquired");
+                }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+            }
         });
     }
 }

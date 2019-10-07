@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="28"
+        android:text="0"
         android:textColor="#ffffff"
         android:textSize="64dp" />
     <TextView
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="70"
+        android:text="0"
         android:textColor="#ffffff"
         android:textSize="64dp" />
     </LinearLayout>
