@@ -91,11 +91,29 @@ public class TemperatureFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isCheckPowerBtn) {
-                    isCheckPowerBtn = false;
-                    powerButton.setBackgroundResource(R.drawable.power_off);
+                    final String publishMessage = "ON";
+                    final String publishTopic = "sensor/relay";
+                    boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
+                    if(success)
+                    {
+                        isCheckPowerBtn = false;
+                        powerButton.setBackgroundResource(R.drawable.power_off);
+                    }
+                    else{
+                        Toast.makeText(getActivity(),"เครื่องปรับอากาศไม่สามารถเปิดได้",Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    isCheckPowerBtn = true;
-                    powerButton.setBackgroundResource(R.drawable.power_on);
+                    final String publishMessage = "OFF";
+                    final String publishTopic = "sensor/relay";
+                    boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
+                    if(success)
+                    {
+                        isCheckPowerBtn = true;
+                        powerButton.setBackgroundResource(R.drawable.power_on);
+                    }
+                    else{
+                        Toast.makeText(getActivity(),"เครื่องปรับอากาศไม่สามารถปิดได้",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
