@@ -2,7 +2,9 @@ package com.example.aircontrol.Fragment;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -42,6 +44,9 @@ public class TemperatureFragment extends Fragment {
     public int timeOffMinute;
     TextView txtTemp;
     TextView txtHumidity;
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    final String P_NAME = "App_Config";
     public TemperatureFragment() {
         // Required empty public constructor
     }
@@ -71,17 +76,17 @@ public class TemperatureFragment extends Fragment {
 
     public void onListViewSettingAirConditioner(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าอุณหภูมิและความชื้นเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศเมื่อค่าอุณหภูมิเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "เปิดเครื่องปรับอากาศเมื่อผู้ใช้อยู่ภายในบ้าน", "ปิดเครื่องปรับอากาศเมื่อผู้ใช้ไม่อยู่ภายในบ้าน"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าอุณหภูมิและความชื้นเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศเมื่อค่าอุณหภูมิเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "เปิดเครื่องปรับอากาศเมื่อผู้ใช้อยู่ภายในบ้าน", "ปิดเครื่องปรับอากาศเมื่อผู้ใช้ไม่อยู่ภายในบ้าน"};
         String fragmentName = "TemperatureFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirConditioner);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String selected_item= String.valueOf(adapterView.getItemAtPosition(i));
-                Toast.makeText(getActivity(),"aaa",Toast.LENGTH_SHORT).show();
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                String selected_item= String.valueOf(adapterView.getItemAtPosition(i));
+//                Toast.makeText(getActivity(),"aaa",Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     public void onButtonPowerAirConditioner(View rootView)
@@ -92,7 +97,7 @@ public class TemperatureFragment extends Fragment {
             public void onClick(View view) {
                 if (isCheckPowerBtn) {
                     final String publishMessage = "ON";
-                    final String publishTopic = "sensor/relay";
+                    final String publishTopic = "sensor/powerairconditioner";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
@@ -104,7 +109,7 @@ public class TemperatureFragment extends Fragment {
                     }
                 } else {
                     final String publishMessage = "OFF";
-                    final String publishTopic = "sensor/relay";
+                    final String publishTopic = "sensor/powerairconditioner";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
@@ -155,8 +160,13 @@ public class TemperatureFragment extends Fragment {
     {
         // สร้าง Calendar
         final Calendar calendar = Calendar.getInstance();
-        timeOnHour = calendar.get(Calendar.HOUR_OF_DAY);
-        timeOnMinute = calendar.get(Calendar.MINUTE);
+        String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        String settimeOnAirconditioner = sp.getString("SettimeOnAirconditioner", time);
+        String[] timeOn = settimeOnAirconditioner.split(":");
+        timeOnHour = Integer.parseInt(timeOn[0]);
+        timeOnMinute = Integer.parseInt(timeOn[1]);
+
         Button settingOnTimerButton = rootView.findViewById(R.id.btnSettingOnTimerTemp);
         settingOnTimerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +179,13 @@ public class TemperatureFragment extends Fragment {
                             //calendar.set(Calendar.MINUTE, minute);
                             timeOnHour = hourOfDay;
                             timeOnMinute = minute;
+                            String time = timeOnHour + ":" + timeOnMinute;
+                            editor = sp.edit();
+                            editor.putString("SettimeOnAirconditioner", time);
+                            editor.commit();
+                            final String publishMessage = time;
+                            final String publishTopic = "sensor/settimeonairconditioner";
+                            boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
                 };
@@ -185,8 +202,12 @@ public class TemperatureFragment extends Fragment {
     {
         // สร้าง Calendar
         final Calendar calendar = Calendar.getInstance();
-        timeOffHour = calendar.get(Calendar.HOUR_OF_DAY);
-        timeOffMinute = calendar.get(Calendar.MINUTE);
+        String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        String settimeOffAirconditioner = sp.getString("SettimeOffAirconditioner", time);
+        String[] timeOff = settimeOffAirconditioner.split(":");
+        timeOffHour = Integer.parseInt(timeOff[0]);
+        timeOffMinute = Integer.parseInt(timeOff[1]);
         Button settingOffTimerButton = rootView.findViewById(R.id.btnSettingOffTimerTemp);
         settingOffTimerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,15 +216,20 @@ public class TemperatureFragment extends Fragment {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         if (view.isShown()) {
-                            //calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                            //calendar.set(Calendar.MINUTE, minute);
                             timeOffHour = hourOfDay;
                             timeOffMinute = minute;
+                            String time = timeOffHour + ":" + timeOffMinute;
+                            editor = sp.edit();
+                            editor.putString("SettimeOffAirconditioner", time);
+                            editor.commit();
+                            final String publishMessage = time;
+                            final String publishTopic = "sensor/settimeoffairconditioner";
+                            boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
                 };
                 final TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, timePickerListener, timeOffHour, timeOffMinute, true);
-                timePickerDialog.setTitle("ตั้งเวลาเปิดเครื่องปรับอากาศ");
+                timePickerDialog.setTitle("ตั้งเวลาปิดเครื่องปรับอากาศ");
                 timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 timePickerDialog.show();
             }

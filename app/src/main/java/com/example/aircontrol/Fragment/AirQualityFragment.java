@@ -75,7 +75,7 @@ public class AirQualityFragment extends Fragment {
 
     public void onListViewSettingAirPurifier(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิด-ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิดเครื่องกรองอากาศเมื่อผู้ใช้อยู่ภายในบ้าน", "ปิดเครื่องกรองอากาศเมื่อผู้ใช้ไม่อยู่ภายในบ้าน"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิดเครื่องกรองอากาศเมื่อผู้ใช้อยู่ภายในบ้าน", "ปิดเครื่องกรองอากาศเมื่อผู้ใช้ไม่อยู่ภายในบ้าน"};
         String fragmentName = "AirQualityFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirPurifier);
@@ -235,19 +235,6 @@ public class AirQualityFragment extends Fragment {
                 switch (topic){
                     case "sensor/airquality":
                         txtAirQuality.setText(mqttMessage.toString());
-                        int airQuality = Integer.parseInt(mqttMessage.toString());
-                        if(airQuality <= 25) {
-                            txtAirQuality.setTextColor(Color.parseColor("#66FFFF"));
-                        }
-                        else if(airQuality > 25 && airQuality <= 50) {
-                            txtAirQuality.setTextColor(Color.parseColor("#33FF00"));
-                        }
-                        else if(airQuality > 51 && airQuality <= 100) {
-                            txtAirQuality.setTextColor(Color.parseColor("#FFFF00"));
-                        }
-                        else if(airQuality > 100) {
-                            txtAirQuality.setTextColor(Color.parseColor("#DD0000"));
-                        }
                         break;
                     case "sensor/relay":
 

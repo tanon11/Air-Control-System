@@ -85,10 +85,15 @@ public class CustomAdapter extends BaseAdapter {
                     break;
                 case 3:
                     sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOffTimeAirPurifier = sp.getBoolean("OffTimeAirPurifier", false);
+                    sw.setChecked(isOffTimeAirPurifier);
+                    break;
+                case 4:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
                     boolean isOnGPSAirPurifier = sp.getBoolean("OnGPSAirPurifier", false);
                     sw.setChecked(isOnGPSAirPurifier);
                     break;
-                case 4:
+                case 5:
                     sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
                     boolean isOffGPSAirPurifier = sp.getBoolean("OffGPSAirPurifier", false);
                     sw.setChecked(isOffGPSAirPurifier);
@@ -97,9 +102,44 @@ public class CustomAdapter extends BaseAdapter {
                 default:
                     Log.d("Error","Error switch");
             }
-        } else if (fragmentName.equals("TemperatureFragment"))
+        }
+        else if (fragmentName.equals("TemperatureFragment"))
         {
+            switch (position){
+                case 0:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isNotificationAirConditioner = sp.getBoolean("NotificationAirConditioner", false);
+                    sw.setChecked(isNotificationAirConditioner);
+                    break;
+                case 1:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOnLimitAirConditioner = sp.getBoolean("OnLimitAirConditioner", false);
+                    sw.setChecked(isOnLimitAirConditioner);
+                    break;
+                case 2:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOnTimeAirConditioner = sp.getBoolean("OnTimeAirConditioner", false);
+                    sw.setChecked(isOnTimeAirConditioner);
+                    break;
+                case 3:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOffTimeAirConditioner = sp.getBoolean("OffTimeAirConditioner", false);
+                    sw.setChecked(isOffTimeAirConditioner);
+                    break;
+                case 4:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOnGPSAirConditioner = sp.getBoolean("OnGPSAirConditioner", false);
+                    sw.setChecked(isOnGPSAirConditioner);
+                    break;
+                case 5:
+                    sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                    boolean isOffGPSAirConditioner = sp.getBoolean("OffGPSAirConditioner", false);
+                    sw.setChecked(isOffGPSAirConditioner);
+                    break;
 
+                default:
+                    Log.d("Error","Error switch");
+            }
         }
         //sw.setChecked(checkedSetting[position]);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -127,8 +167,10 @@ public class CustomAdapter extends BaseAdapter {
                         case 2:
 
                             break;
-
                         case 3:
+
+                            break;
+                        case 4:
                             sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
                             editor = sp.edit();
                             if (isChecked) {
@@ -140,16 +182,85 @@ public class CustomAdapter extends BaseAdapter {
                                 editor.commit();
                             }
                             break;
-                        case 4:
+                        case 5:
 
                             break;
 
                         default:
                             Log.d("Error","Error switch");
                     }
-                } else if (fragmentName.equals("TemperatureFragment"))
+                }
+                else if (fragmentName.equals("TemperatureFragment"))
                 {
+                    String publishMessage = "";
+                    String publishTopic = "";
+                    switch (position){
+                        case 0:
+                            if (isChecked) {
+                                publishMessage = "ON";
+                                publishTopic = "sensor/relay";
+                                boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
+                                if (success) {
 
+                                } else {
+
+                                }
+                            }
+                            break;
+                        case 1:
+
+                            break;
+                        case 2:
+                            publishTopic = "sensor/ontimeairconditioner";
+                            sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                            editor = sp.edit();
+                            if (isChecked) {
+                                publishMessage = "ON";
+                                editor.putBoolean("OnTimeAirConditioner", true);
+                                editor.commit();
+                            }
+                            else {
+                                publishMessage = "OFF";
+                                editor.putBoolean("OnTimeAirConditioner", false);
+                                editor.commit();
+                            }
+                            mqttHelper.publishMessage(publishTopic, publishMessage);
+                            break;
+                        case 3:
+                            publishTopic = "sensor/offtimeairconditioner";
+                            sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                            editor = sp.edit();
+                            if (isChecked) {
+                                publishMessage = "ON";
+                                editor.putBoolean("OffTimeAirConditioner", true);
+                                editor.commit();
+                            }
+                            else {
+                                publishMessage = "OFF";
+                                editor.putBoolean("OffTimeAirConditioner", false);
+                                editor.commit();
+                            }
+                            mqttHelper.publishMessage(publishTopic, publishMessage);
+                            break;
+                        case 4:
+                            sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+                            editor = sp.edit();
+                            if (isChecked) {
+                                editor.putBoolean("OnGPSAirConditioner", true);
+                                editor.commit();
+                            }
+                            else {
+                                editor.putBoolean("OnGPSAirConditioner", false);
+                                editor.commit();
+                            }
+                            break;
+                        case 5:
+
+                            break;
+
+                        default:
+                            Log.d("Error","Error switch");
+                    }
                 }
             }
         });
