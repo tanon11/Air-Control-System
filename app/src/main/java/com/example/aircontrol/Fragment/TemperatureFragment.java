@@ -97,7 +97,7 @@ public class TemperatureFragment extends Fragment {
             public void onClick(View view) {
                 if (isCheckPowerBtn) {
                     final String publishMessage = "ON";
-                    final String publishTopic = "sensor/powerairconditioner";
+                    final String publishTopic = "setting/powerairconditioner";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
@@ -109,7 +109,7 @@ public class TemperatureFragment extends Fragment {
                     }
                 } else {
                     final String publishMessage = "OFF";
-                    final String publishTopic = "sensor/powerairconditioner";
+                    final String publishTopic = "setting/powerairconditioner";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
@@ -184,7 +184,7 @@ public class TemperatureFragment extends Fragment {
                             editor.putString("SettimeOnAirconditioner", time);
                             editor.commit();
                             final String publishMessage = time;
-                            final String publishTopic = "sensor/settimeonairconditioner";
+                            final String publishTopic = "setting/settimeonairconditioner";
                             boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
@@ -223,7 +223,7 @@ public class TemperatureFragment extends Fragment {
                             editor.putString("SettimeOffAirconditioner", time);
                             editor.commit();
                             final String publishMessage = time;
-                            final String publishTopic = "sensor/settimeoffairconditioner";
+                            final String publishTopic = "setting/settimeoffairconditioner";
                             boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
@@ -259,9 +259,6 @@ public class TemperatureFragment extends Fragment {
                         break;
                     case "sensor/humidity":
                         txtHumidity.setText(mqttMessage.toString());
-                        break;
-                    case "sensor/relay":
-
                         break;
                     default:
                         Log.d("Error","Error ocquired");

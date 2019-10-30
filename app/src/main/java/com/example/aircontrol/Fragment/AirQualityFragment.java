@@ -236,10 +236,6 @@ public class AirQualityFragment extends Fragment {
                     case "sensor/airquality":
                         txtAirQuality.setText(mqttMessage.toString());
                         break;
-                    case "sensor/relay":
-
-                        break;
-
                     default:
                         Log.d("Error","Error ocquired");
                 }

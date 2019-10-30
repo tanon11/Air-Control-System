@@ -211,7 +211,7 @@ public class CustomAdapter extends BaseAdapter {
 
                             break;
                         case 2:
-                            publishTopic = "sensor/ontimeairconditioner";
+                            publishTopic = "setting/ontimeairconditioner";
                             sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
                             editor = sp.edit();
                             if (isChecked) {
@@ -227,7 +227,7 @@ public class CustomAdapter extends BaseAdapter {
                             mqttHelper.publishMessage(publishTopic, publishMessage);
                             break;
                         case 3:
-                            publishTopic = "sensor/offtimeairconditioner";
+                            publishTopic = "setting/offtimeairconditioner";
                             sp = mContext.getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
                             editor = sp.edit();
                             if (isChecked) {
