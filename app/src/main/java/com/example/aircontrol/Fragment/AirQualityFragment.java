@@ -41,7 +41,7 @@ import java.util.Calendar;
  */
 public class AirQualityFragment extends Fragment {
     MqttHelper mqttHelper;
-    public boolean isCheckPowerBtn = false;
+    public boolean isCheckPowerBtn = true;
     public int timeOnHour;
     public int timeOnMinute;
     public int timeOffHour;
@@ -82,7 +82,7 @@ public class AirQualityFragment extends Fragment {
 
     public void onListViewSettingAirPurifier(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิดเครื่องกรองอากาศเมื่อผู้ใช้อยู่ภายในบ้าน", "ปิดเครื่องกรองอากาศเมื่อผู้ใช้ไม่อยู่ภายในบ้าน"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากตำแหน่งที่อยู่"};
         String fragmentName = "AirQualityFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirPurifier);
