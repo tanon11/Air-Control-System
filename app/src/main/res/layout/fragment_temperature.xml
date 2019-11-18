@@ -10,11 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        android:layout_weight="0.2"
+        android:layout_weight="0.125"
         android:gravity="center"
         android:text="Air Conditioner"
         android:textColor="#ffffff"
-        android:textSize="32dp" />
+        android:textSize="30dp" />
+    <TextView
+        android:id="@+id/txtModeAirConditioner"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.075"
+        android:gravity="center"
+        android:text="โหมดคนทั่วไป"
+        android:textColor="#ffffff"
+        android:textSize="14dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

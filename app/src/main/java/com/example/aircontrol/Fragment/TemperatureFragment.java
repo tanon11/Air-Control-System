@@ -44,6 +44,7 @@ public class TemperatureFragment extends Fragment {
     public int timeOffMinute;
     TextView txtTemp;
     TextView txtHumidity;
+    TextView txtModeAirConditioner;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     final String P_NAME = "App_Config";
@@ -58,6 +59,7 @@ public class TemperatureFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_temperature, container, false);
         txtTemp = rootView.findViewById(R.id.txtTemp);
         txtHumidity = rootView.findViewById(R.id.txtHumidity);
+        txtModeAirConditioner = rootView.findViewById(R.id.txtModeAirConditioner);
         startMqtt();
 
         // สร้าง ListView
@@ -81,12 +83,6 @@ public class TemperatureFragment extends Fragment {
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirConditioner);
         listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String selected_item= String.valueOf(adapterView.getItemAtPosition(i));
-//                Toast.makeText(getActivity(),"aaa",Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     public void onButtonPowerAirConditioner(View rootView)
@@ -103,6 +99,7 @@ public class TemperatureFragment extends Fragment {
                     {
                         isCheckPowerBtn = false;
                         powerButton.setBackgroundResource(R.drawable.power_off);
+                        Toast.makeText(getActivity(),"เปิดเครื่องปรับอากาศ",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(getActivity(),"เครื่องปรับอากาศไม่สามารถเปิดได้",Toast.LENGTH_SHORT).show();
@@ -115,6 +112,7 @@ public class TemperatureFragment extends Fragment {
                     {
                         isCheckPowerBtn = true;
                         powerButton.setBackgroundResource(R.drawable.power_on);
+                        Toast.makeText(getActivity(),"ปิดเครื่องปรับอากาศ",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(getActivity(),"เครื่องปรับอากาศไม่สามารถปิดได้",Toast.LENGTH_SHORT).show();
@@ -126,6 +124,17 @@ public class TemperatureFragment extends Fragment {
 
     public void onButtonSettingTemp(View rootView)
     {
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        int modeAirConditioner = sp.getInt("ModeAirConditioner", 2);
+        if (modeAirConditioner == 1) {
+            txtModeAirConditioner.setText("โหมดผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา");
+        }
+        else
+        {
+            txtModeAirConditioner.setText("โหมดคนทั่วไป");
+        }
+        editor = sp.edit();
+        final String publishTopic = "setting/modeairconditioner";
         Button settingTempButton = rootView.findViewById(R.id.btnSettingTemp);
         settingTempButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,14 +146,19 @@ public class TemperatureFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
                         switch(which){
                             case 0:
-                                Toast.makeText(getActivity(),"aaaaaa",Toast.LENGTH_SHORT).show();
+                                editor.putInt("ModeAirConditioner", 1);
+                                editor.commit();
+                                txtModeAirConditioner.setText("โหมดผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา");
+                                mqttHelper.publishMessage(publishTopic, "1");
                                 break;
                             case 1:
-                                Toast.makeText(getActivity(),"bbbb",Toast.LENGTH_SHORT).show();
+                                editor.putInt("ModeAirConditioner", 2);
+                                editor.commit();
+                                txtModeAirConditioner.setText("โหมดคนทั่วไป");
+                                mqttHelper.publishMessage(publishTopic, "2");
                                 break;
                         }
                     }

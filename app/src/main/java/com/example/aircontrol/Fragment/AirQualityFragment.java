@@ -2,7 +2,9 @@ package com.example.aircontrol.Fragment;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -45,6 +47,10 @@ public class AirQualityFragment extends Fragment {
     public int timeOffHour;
     public int timeOffMinute;
     TextView txtAirQuality;
+    TextView txtModeAirPurifier;
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    final String P_NAME = "App_Config";
     public AirQualityFragment() {
         // Required empty public constructor
     }
@@ -56,6 +62,7 @@ public class AirQualityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_air_quality, container, false);
 
         txtAirQuality = rootView.findViewById(R.id.txtPM);
+        txtModeAirPurifier = rootView.findViewById(R.id.txtModeAirPurifier);
         startMqtt();
         //txtAirQuality.setText("030");
 
@@ -80,12 +87,6 @@ public class AirQualityFragment extends Fragment {
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirPurifier);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String selected_item= String.valueOf(adapterView.getItemAtPosition(i));
-                Toast.makeText(getActivity(),"aaa",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void onButtonPowerAirPurifier(View rootView)
@@ -96,12 +97,13 @@ public class AirQualityFragment extends Fragment {
             public void onClick(View view) {
                 if (isCheckPowerBtn) {
                     final String publishMessage = "ON";
-                    final String publishTopic = "sensor/relay";
+                    final String publishTopic = "setting/powerairpurifier";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
                         isCheckPowerBtn = false;
                         powerButton.setBackgroundResource(R.drawable.power_off);
+                        Toast.makeText(getActivity(),"เปิดเครื่องกรองอากาศ",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(getActivity(),"เครื่องกรองอากาศไม่สามารถเปิดได้",Toast.LENGTH_SHORT).show();
@@ -109,12 +111,13 @@ public class AirQualityFragment extends Fragment {
                 } else {
 
                     final String publishMessage = "OFF";
-                    final String publishTopic = "sensor/relay";
+                    final String publishTopic = "setting/powerairpurifier";
                     boolean success = mqttHelper.publishMessage(publishTopic,publishMessage);
                     if(success)
                     {
                         isCheckPowerBtn = true;
                         powerButton.setBackgroundResource(R.drawable.power_on);
+                        Toast.makeText(getActivity(),"ปิดเครื่องกรองอากาศ",Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(getActivity(),"เครื่องกรองอากาศไม่สามารถปิดได้",Toast.LENGTH_SHORT).show();
@@ -126,6 +129,17 @@ public class AirQualityFragment extends Fragment {
 
     public void onButtonSettingPM(View rootView)
     {
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        int modeAirConditioner = sp.getInt("ModeAirPurifier", 2);
+        if (modeAirConditioner == 1) {
+            txtModeAirPurifier.setText("โหมดผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา");
+        }
+        else
+        {
+            txtModeAirPurifier.setText("โหมดคนทั่วไป");
+        }
+        editor = sp.edit();
+        final String publishTopic = "setting/modeairpurifier";
         Button settingPMButton = rootView.findViewById(R.id.btnSettingPM);
         settingPMButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,14 +151,19 @@ public class AirQualityFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
                         switch(which){
                             case 0:
-                                Toast.makeText(getActivity(),"aaaaaa",Toast.LENGTH_SHORT).show();
+                                editor.putInt("ModeAirPurifier", 1);
+                                editor.commit();
+                                txtModeAirPurifier.setText("โหมดผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา");
+                                mqttHelper.publishMessage(publishTopic, "1");
                                 break;
                             case 1:
-                                Toast.makeText(getActivity(),"bbbb",Toast.LENGTH_SHORT).show();
+                                editor.putInt("ModeAirPurifier", 2);
+                                editor.commit();
+                                txtModeAirPurifier.setText("โหมดคนทั่วไป");
+                                mqttHelper.publishMessage(publishTopic, "2");
                                 break;
                         }
                     }
@@ -160,8 +179,13 @@ public class AirQualityFragment extends Fragment {
     {
         // สร้าง Calendar
         final Calendar calendar = Calendar.getInstance();
-        timeOnHour = calendar.get(Calendar.HOUR_OF_DAY);
-        timeOnMinute = calendar.get(Calendar.MINUTE);
+        String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        String settimeOnAirpurifier = sp.getString("SettimeOnAirpurifier", time);
+        String[] timeOn = settimeOnAirpurifier.split(":");
+        timeOnHour = Integer.parseInt(timeOn[0]);
+        timeOnMinute = Integer.parseInt(timeOn[1]);
+
         Button settingOnTimerButton = rootView.findViewById(R.id.btnSettingOnTimerPM);
         settingOnTimerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +198,13 @@ public class AirQualityFragment extends Fragment {
                             //calendar.set(Calendar.MINUTE, minute);
                             timeOnHour = hourOfDay;
                             timeOnMinute = minute;
+                            String time = timeOnHour + ":" + timeOnMinute;
+                            editor = sp.edit();
+                            editor.putString("SettimeOnAirpurifier", time);
+                            editor.commit();
+                            final String publishMessage = time;
+                            final String publishTopic = "setting/settimeonairpurifier";
+                            boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
                 };
@@ -190,8 +221,12 @@ public class AirQualityFragment extends Fragment {
     {
         // สร้าง Calendar
         final Calendar calendar = Calendar.getInstance();
-        timeOffHour = calendar.get(Calendar.HOUR_OF_DAY);
-        timeOffMinute = calendar.get(Calendar.MINUTE);
+        String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        sp = getActivity().getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
+        String SettimeOffAirpurifier = sp.getString("SettimeOffAirpurifier", time);
+        String[] timeOff = SettimeOffAirpurifier.split(":");
+        timeOffHour = Integer.parseInt(timeOff[0]);
+        timeOffMinute = Integer.parseInt(timeOff[1]);
         Button settingOffTimerButton = rootView.findViewById(R.id.btnSettingOffTimerPM);
         settingOffTimerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,6 +239,13 @@ public class AirQualityFragment extends Fragment {
                             //calendar.set(Calendar.MINUTE, minute);
                             timeOffHour = hourOfDay;
                             timeOffMinute = minute;
+                            String time = timeOffHour + ":" + timeOffMinute;
+                            editor = sp.edit();
+                            editor.putString("SettimeOffAirpurifier", time);
+                            editor.commit();
+                            final String publishMessage = time;
+                            final String publishTopic = "setting/settimeoffairpurifier";
+                            boolean success = mqttHelper.publishMessage(publishTopic, publishMessage);
                         }
                     }
                 };
