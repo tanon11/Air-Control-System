@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startMqtt();
+        //startMqtt();
 
         //สร้าง Instance ของ Google API Client
         if (checkGooglePlayServices()) {
@@ -138,21 +138,13 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         sp = getSharedPreferences(P_NAME, Context.MODE_PRIVATE);
-        boolean isOnGPSAirPurifier = sp.getBoolean("OnGPSAirPurifier", false);
-        if (isOnGPSAirPurifier) {
+        boolean isGPSAirConditioner = sp.getBoolean("GPSAirConditioner", false);
+        boolean isGPSAirPurifier = sp.getBoolean("GPSAirPurifier", false);
+        if (isGPSAirConditioner || isGPSAirPurifier) {
             double distanceKM = distance(latitude,longitude,mLastLocation.getLatitude(),mLastLocation.getLongitude());
-            if (distanceKM < 6)
-            {
 
-            }
-            else
-            {
-
-            }
             Toast.makeText(this, String.valueOf(Math.round(distanceKM)) ,Toast.LENGTH_LONG).show();
         }
-
-        //Toast.makeText(this, "Latitude:" + mLastLocation.getLatitude()+", Longitude:"+mLastLocation.getLongitude(),Toast.LENGTH_LONG).show();
 
     }
 
@@ -183,40 +175,40 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
     }
 
-    private void startMqtt(){
-        mqttHelper = new MqttHelper(getApplicationContext());
-        mqttHelper.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-                Log.d("Debug","Connected");
-            }
-
-            @Override
-            public void connectionLost(Throwable throwable) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Log.d("Debug",topic);
-                switch (topic){
-                    case "sensor/latitude":
-                        latitude = Integer.parseInt(mqttMessage.toString());
-                        break;
-                    case "sensor/longitude":
-                        longitude = Integer.parseInt(mqttMessage.toString());
-                        break;
-                    default:
-                        Log.d("Error","Error ocquired");
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-
-            }
-        });
-    }
+//    private void startMqtt(){
+//        mqttHelper = new MqttHelper(getApplicationContext());
+//        mqttHelper.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
+//            @Override
+//            public void connectComplete(boolean reconnect, String serverURI) {
+//                Log.d("Debug","Connected");
+//            }
+//
+//            @Override
+//            public void connectionLost(Throwable throwable) {
+//
+//            }
+//
+//            @Override
+//            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+//                Log.d("Debug",topic);
+//                switch (topic){
+//                    case "sensor/latitude":
+//                        latitude = Integer.parseInt(mqttMessage.toString());
+//                        break;
+//                    case "sensor/longitude":
+//                        longitude = Integer.parseInt(mqttMessage.toString());
+//                        break;
+//                    default:
+//                        Log.d("Error","Error ocquired");
+//                }
+//            }
+//
+//            @Override
+//            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+//
+//            }
+//        });
+//    }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
         if ((lat1 == lat2) && (lon1 == lon2)) {
