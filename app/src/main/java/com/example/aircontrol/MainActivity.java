@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //startMqtt();
+        startMqtt();
 
         //สร้าง Instance ของ Google API Client
         if (checkGooglePlayServices()) {
@@ -143,7 +143,13 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (isGPSAirConditioner || isGPSAirPurifier) {
             double distanceKM = distance(latitude,longitude,mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
-            Toast.makeText(this, String.valueOf(Math.round(distanceKM)) ,Toast.LENGTH_LONG).show();
+            String publishTopicLatitude = "setting/latitude";
+            String publishTopicLongitude = "setting/longitude";
+            String publishMessageLatitude = Double.toString(mLastLocation.getLatitude());
+            String publishMessageLongitude = Double.toString(mLastLocation.getLongitude());
+            mqttHelper.publishMessage(publishTopicLatitude, publishMessageLatitude);
+            mqttHelper.publishMessage(publishTopicLongitude, publishMessageLongitude);
+
         }
 
     }
@@ -175,22 +181,22 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         }
     }
 
-//    private void startMqtt(){
-//        mqttHelper = new MqttHelper(getApplicationContext());
-//        mqttHelper.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
-//            @Override
-//            public void connectComplete(boolean reconnect, String serverURI) {
-//                Log.d("Debug","Connected");
-//            }
-//
-//            @Override
-//            public void connectionLost(Throwable throwable) {
-//
-//            }
-//
-//            @Override
-//            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-//                Log.d("Debug",topic);
+    private void startMqtt(){
+        mqttHelper = new MqttHelper(getApplicationContext());
+        mqttHelper.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.d("Debug","Connected");
+            }
+
+            @Override
+            public void connectionLost(Throwable throwable) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                Log.d("Debug",topic);
 //                switch (topic){
 //                    case "sensor/latitude":
 //                        latitude = Integer.parseInt(mqttMessage.toString());
@@ -201,14 +207,14 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
 //                    default:
 //                        Log.d("Error","Error ocquired");
 //                }
-//            }
-//
-//            @Override
-//            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-//
-//            }
-//        });
-//    }
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+            }
+        });
+    }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2) {
         if ((lat1 == lat2) && (lon1 == lon2)) {
