@@ -34,14 +34,10 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     final String P_NAME = "App_Config";
-    double latitude = 0;
-    double longitude = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         startMqtt();
 
         //สร้าง Instance ของ Google API Client
@@ -141,14 +137,17 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         boolean isGPSAirConditioner = sp.getBoolean("GPSAirConditioner", false);
         boolean isGPSAirPurifier = sp.getBoolean("GPSAirPurifier", false);
         if (isGPSAirConditioner || isGPSAirPurifier) {
-            double distanceKM = distance(latitude,longitude,mLastLocation.getLatitude(),mLastLocation.getLongitude());
+//            double distanceKM = distance(latitude,longitude,mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
             String publishTopicLatitude = "setting/latitude";
             String publishTopicLongitude = "setting/longitude";
             String publishMessageLatitude = Double.toString(mLastLocation.getLatitude());
             String publishMessageLongitude = Double.toString(mLastLocation.getLongitude());
-            mqttHelper.publishMessage(publishTopicLatitude, publishMessageLatitude);
-            mqttHelper.publishMessage(publishTopicLongitude, publishMessageLongitude);
+            if (mqttHelper.mqttAndroidClient.isConnected())
+            {
+                mqttHelper.publishMessage(publishTopicLatitude, publishMessageLatitude);
+                mqttHelper.publishMessage(publishTopicLongitude, publishMessageLongitude);
+            }
 
         }
 
