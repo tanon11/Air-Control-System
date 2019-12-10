@@ -1,10 +1,14 @@
 package com.example.aircontrol;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
+
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +38,7 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     final String P_NAME = "App_Config";
+    int PERMISSION_ID = 44;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +49,11 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (checkGooglePlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
+            if (!checkPermissions()) {
+                requestPermissions();
+            }
         }
+
 
         MyPagerAdapter mPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         pager = findViewById(R.id.pager);
@@ -177,6 +186,31 @@ public class MainActivity extends FragmentActivity implements GoogleApiClient.Co
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
+        }
+    }
+    private boolean checkPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSION_ID
+        );
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (mGoogleApiClient != null) {
+                    mGoogleApiClient.connect();
+                }
+            }
         }
     }
 
