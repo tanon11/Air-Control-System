@@ -78,7 +78,7 @@ public class TemperatureFragment extends Fragment {
 
     public void onListViewSettingAirConditioner(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าอุณหภูมิและความชื้นเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศเมื่อค่าอุณหภูมิเกินกว่าที่กำหนด", "เปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องปรับอากาศโดยดูจากตำแหน่งที่อยู่"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าอุณหภูมิและความชื้นเกินกำหนด", "เปิดเครื่องปรับอากาศเมื่อค่าอุณหภูมิเกินกำหนด", "เปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องปรับอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องปรับอากาศโดยดูจากตำแหน่ง"};
         String fragmentName = "TemperatureFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirConditioner);

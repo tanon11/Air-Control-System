@@ -82,7 +82,7 @@ public class AirQualityFragment extends Fragment {
 
     public void onListViewSettingAirPurifier(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นละอองเกินกว่าที่กำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากตำแหน่งที่อยู่"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นเกินกำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นเกินกำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากตำแหน่ง"};
         String fragmentName = "AirQualityFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirPurifier);
