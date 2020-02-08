@@ -250,7 +250,7 @@ public class AirQualityFragment extends Fragment {
                     }
                 };
                 final TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, timePickerListener, timeOffHour, timeOffMinute, true);
-                timePickerDialog.setTitle("ตั้งเวลาเปิดเครื่องกรองอากาศ");
+                timePickerDialog.setTitle("ตั้งเวลาปิดเครื่องกรองอากาศ");
                 timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 timePickerDialog.show();
             }
