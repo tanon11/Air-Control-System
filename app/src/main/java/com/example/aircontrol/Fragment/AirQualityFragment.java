@@ -70,7 +70,7 @@ public class AirQualityFragment extends Fragment {
         this.onListViewSettingAirPurifier(rootView, mqttHelper);
         //สร้าง Button เปิด-ปิด เครื่องกรองอากาศ
         this.onButtonPowerAirPurifier(rootView);
-        //สร้าง Button ตั้งค่าสภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท
+        //สร้าง Button ตั้งค่าคุณภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท
         this.onButtonSettingPM(rootView);
         //สร้าง Button ตั้งเวลาเปิดเครื่องกรองอากาศ
         this.onButtonSettingOnTimer(rootView);
@@ -82,7 +82,7 @@ public class AirQualityFragment extends Fragment {
 
     public void onListViewSettingAirPurifier(View rootView, MqttHelper mqttHelper)
     {
-        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นเกินกำหนด", "เปิดเครื่องกรองอากาศเมื่อค่าฝุ่นเกินกำหนด", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากตำแหน่ง"};
+        String[] listName = { "แจ้งเตือนเมื่อค่าฝุ่นเกินกำหนด", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากค่าฝุ่น", "เปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "ปิดเครื่องกรองอากาศตามเวลาที่กำหนดไว้", "เปิด-ปิดเครื่องกรองอากาศโดยดูจากตำแหน่ง"};
         String fragmentName = "AirQualityFragment";
         CustomAdapter adapter = new CustomAdapter(getActivity(), listName, fragmentName, mqttHelper);
         ListView listView = rootView.findViewById(R.id.listViewAirPurifier);
@@ -145,7 +145,7 @@ public class AirQualityFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("ตั้งค่าสภาพอากาศ");
+                builder.setTitle("ตั้งค่าคุณภาพอากาศ");
                 String[] types = {"ผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา", "คนทั่วไป"};
                 builder.setItems(types, new DialogInterface.OnClickListener() {
 

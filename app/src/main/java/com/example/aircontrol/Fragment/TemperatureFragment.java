@@ -66,7 +66,7 @@ public class TemperatureFragment extends Fragment {
         this.onListViewSettingAirConditioner(rootView, mqttHelper);
         //สร้าง Button เปิด-ปิด เครื่องปรับอากาศ
         this.onButtonPowerAirConditioner(rootView);
-        //สร้าง Button ตั้งค่าสภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท
+        //สร้าง Button ตั้งค่าคุณภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท
         this.onButtonSettingTemp(rootView);
         //สร้าง Button ตั้งเวลาเปิดเครื่องปรับอากาศ
         this.onButtonSettingOnTimer(rootView);
@@ -140,7 +140,7 @@ public class TemperatureFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("ตั้งค่าสภาพอากาศ");
+                builder.setTitle("ตั้งค่าคุณภาพอากาศ");
                 String[] types = {"ผู้ที่เป็นภูมิแพ้, เด็ก, คนชรา", "คนทั่วไป"};
                 builder.setItems(types, new DialogInterface.OnClickListener() {
 

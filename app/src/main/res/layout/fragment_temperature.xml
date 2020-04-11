@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:gravity="center"
-            android:text="ตั้งค่าสภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท"
+            android:text="ตั้งค่าคุณภาพอากาศให้เหมาะสมแก่กลุ่มคนแต่ละประเภท"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"/>
     </LinearLayout>
